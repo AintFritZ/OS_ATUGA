@@ -3,6 +3,7 @@ name: Log Time Job
 on:
   schedule:
     - cron: "*/5 * * * *"  # Runs every 5 minutes
+  workflow_dispatch:  # Manually trigger the workflow
 
 jobs:
   log_time:
@@ -12,11 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Git config
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
       - name: Run logging script
         run: |
           chmod +x log_time.sh
@@ -24,6 +20,8 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
           git add log.txt
           git commit -m "Update log file with new timestamp" || echo "No changes to commit"
-          git push || echo "Push failed"
+          git push
